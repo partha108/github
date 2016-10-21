@@ -1,0 +1,13 @@
+In terms of which payment structure we are going to be using, after running through a 
+whole lot of different options, the favourite model is the ShutterStock model. i
+e. once you
+ chose your photo, you select download, then you go to a payment page where you choose how many 
+photos you want and get a discount for more bulk purchases.
+They don't like the idea of 'credits' (as opposed to prices) as it's an extra thing for the 
+user to get their head around, so that's good news as it's one less thing for us to have to think about.
+
+They would like to give the option to buy one photo, but then incentivise a discounted bulk 
+purchase to increase sales and loyalty (ie. like Shutterstock, if you buy 5 downloads, some 
+can stay on your account for next time you come back).
+We discussed a few more things concerning the site as well, but more content related issues.
+ I will knock up a word doc to bring you up to date on everything.

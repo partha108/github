@@ -1,0 +1,15 @@
+
+
+Regarding the slider we were discussing before, I reproduced the issue here on my own laptop. It seems to me that the slider resizes based on the width of your browser, but not on the height of it. So the problem is that on a widescreen laptop it ends up being too high. The client would ideally like both the slider and the text below it (Easy Downloading Easy Payment etc) to always appear at the top of the screen (above the fold). So we need to either find another way of resizing it or try a narrower (less tall) slider as you suggested. He would also like us to set a nice 'fade' transition between images please.
+
+Can we also swap the dropdowns for curency and language with the search bar, make the search bar longer with a nice border around it and change the text to 'Search Here for High Quality Images from Nigeria...'
+
+We need to have these 3 key things at the top somehow: 
+
+Register now button, Member login, Photographer Login. The 2 different types of logins might be on a dropdown or whatever you think will work best.  
+
+A prominent HELP link is also reuired up there.
+
+Finally we will need to display the phone number at the top somewhere (just use a dummy number for now).
+
+Thanks :)

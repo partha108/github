@@ -1,0 +1,1141 @@
+<body>
+<link rel="stylesheet" href="<?php echo base_url();?>assets/multiple-select.css" />
+<div id="content" class="span10">
+    <!-- content starts -->
+    <div>
+        <ul class="breadcrumb">
+            <li> <a href="#">Admin</a> <span class="divider">/</span> </li>
+            <li> <a href="#"> Edit Course</a> </li>
+        </ul>
+    </div>
+    <div class="row-fluid sortable">
+        <div class="box span12">
+            <div class="box-header well" data-original-title>
+                <h2><i class="icon-user"></i>Edit Course</h2>
+            </div>
+            <div class="box-content">
+                <?php echo $this->session->flashdata('update_message');  ?>
+                <form method="post" action="<?php echo base_url('index.php/studentlist/edit_course_to_student') ?>">
+                    <table id="tbl" class="table table-striped table-bordered bootstrap-datatable datatable">
+                        <input type="hidden" name="id" value="<?php echo $this->uri->segment(3); ?>">
+
+                        <tr>
+                            <?php
+                            foreach(@$st_data as $res)
+                            {
+                                @$course_id = $res->add_course_id;
+                                @$student_id = $res->student_id;
+                            //echo $res->course_name;
+                            ?>
+                                <input type="hidden" name="course_id" value="<?php echo $course_id;?>">
+                                <input type="hidden" name="student_id" value="<?php echo $student_id;?>">
+                                <td>Academic Year</td>
+                                <td>
+                                    <select  name="add_ac_year" id="add_ac_year" onchange="add_show_course(this.value)" >
+                                        <option value="0">---Select Academic Year---</option>
+                                        <?php
+                                            foreach (@$academic_year as $item)
+                                            {
+                                                @$ac = $item->academic_year;
+                                        ?>
+                                        <option value="<?php echo @$item->academic_year;?>" <?php if($res->academic_year == $ac){ echo "selected";}?>><?php echo $item->academic_year;?></option>
+                                        <?php
+                                            }
+                                        ?>
+                                    </select>
+                                </td>
+                                <td>Course</td>
+                                <td>
+                                    <select id="edit_db_course" name="add_course" onchange="add_show_class(this.value);">
+                                        <?php
+                                            foreach (@$course as $course_list)
+                                            {
+                                                @$course_id = $course_list->course_id;
+                                                @$cl = $course_list->course_name;
+
+                                        ?>
+                                                <option value="<?php echo @$course_id;?>" <?php if($res->course_name == $course_id){ echo "selected";}?>><?php echo $cl;?></option>
+                                        <?php
+                                            }
+                                        ?>
+
+
+                                </select>
+                                <?php
+                                foreach(@$payment_details as $pd){
+                                    if(@$pd->payment_head_name == 'Reg Fees')
+                                    {
+                                        @$reg_fee = $pd->course_reg_fee;
+                                        @$reg_fee_vat = $pd->course_fee_vat;
+                                        @$reg_vat_amt = $pd->course_fee_vat_amt;
+                                        @$reg_tot_amt = $pd->course_vat_tot_amt;
+
+                                    }
+                                    else
+                                    {
+                                        @$sub_amt = $pd->payment_head_amt;
+                                    }
+                                    if(@$pd->payment_head_name == 'Exam Fees')
+                                    {
+                                        @$exam_fee = $pd->exam_fee;
+                                        @$exam_fee_vat = $pd->exam_vat;
+                                        @$exam_vat_amt=  $pd->exam_vat_fee;
+                                        @$exam_tot_amt= $pd->exam_tot_amt;
+                                    }
+
+                                }
+                                ?>
+
+                                <input type="hidden" id="reg_fee_show" name="reg_fee" value="<?php echo @$reg_fee;?>">
+                                <input type="hidden" id="reg_fee_vat" name="reg_fee_vat" value="<?php echo @$reg_fee_vat;?>">
+                                <input type="hidden" id="reg_fee_vat_amt" name="reg_fee_vat_amt" value="<?php echo @$reg_vat_amt;?>">
+                                <input type="hidden" id="reg_fee_tot_amt" name="reg_fee_tot_amt" value="<?php echo @$reg_tot_amt;?>"></td>
+
+
+                            <td>Class</td>  
+                            <td><select id="class_id" name="add_class" onchange="add_show_batch(this.value);add_show_subject(this.value);">
+                                    <option value="0">---Select class---</option>
+                                    <?php
+                                    foreach (@$Classes as $class_list)
+                                    {
+                                        @$cls = $class_list->class_name;
+                                        @$a = explode(",",$cls);
+                                        for($i=0;$i<count($a);$i++)
+                                        {
+                                            ?>
+                                            <option value="<?php echo @$a[$i]?>" <?php if($res->class_name == $a[$i]){ echo "selected";}?>><?php echo $a[$i]?></option>
+                                            <?php
+                                        }}
+                                    ?>
+                                </select>
+                                <input type="hidden" id="exam_fee_show" name="exam_reg_fee" value="<?php echo @$exam_fee;?>">
+                                <input type="hidden" id="exam_fee_vat" name="exam_fee_vat" value="<?php echo @$exam_fee_vat;?>">
+                                <input type="hidden" id="exam_fee_vat_amt" name="exam_fee_vat_amt" value="<?php echo @$exam_vat_amt;?>">
+                                <input type="hidden" id="exam_fee_tot_amt" name="exam_fee_tot_amt" value="<?php echo @$exam_tot_amt;?>">
+                            </td>
+
+                        </tr>
+                    </table>
+                    <a href="#" title="" class="add-author"><button>Add</button></a>
+                    <script>
+                        var counter = <?php echo count($sub_data);?>;
+
+                        jQuery('a.add-author').click(function(event){
+
+                            event.preventDefault();
+                            var optionValue='';
+                            var optionIdText='';
+                            var strr='';
+                            var strr1='';
+                            $("#sub_id_0 option").each(function()
+                            {
+                                optionValue= $(this).val() ;
+                                optionIdText=$(this).text();
+                                strr+='<option value="'+optionValue+'">'+optionIdText+'</option>';
+                            });
+
+                            $("#batch_id_0 option").each(function()
+                            {
+                                optionValue= $(this).val() ;
+                                optionIdText=$(this).text();
+                                strr1+='<option value="'+optionValue+'">'+optionIdText+'</option>';
+                            });
+                            counter++;
+
+
+                            var newRow = '<tr><td>Subject Name</td><td><select id="sub_id_'+counter+'" name="add_new_subject[]" onchange="subject_id_details('+counter+',this.value);sub_fee('+counter+',this.value);sub_payment_detils('+counter+',this.value);sub_payment_amt('+counter+',this.value);sub_payment_to_date('+counter+',this.value);sub_payment_frm_date('+counter+',this.value);sub_payment_vat('+counter+',this.value);sub_payment_vat_amt('+counter+',this.value);sub_payment_total_amt('+counter+',this.value);" >';
+                            newRow += strr;
+                            newRow += '</select></td>';
+                            newRow += '<td style="display:none"  id="subject_id_details_'+counter+'"></td>';
+
+
+                            newRow += '<td style="display: none"  id="payment_head_details_'+counter+'"></td>';
+                            newRow +='<td  style="display: none"  id="payment_head_details_amt_'+counter+'"></td>';
+                            newRow +=' <td style="display: none"  id="payment_head_details_vat_'+counter+'"></td>';
+                            newRow +='<td  style="display: none"  id="payment_head_details_vat_amt_'+counter+'"></td>';
+                            newRow +='<td  style="display: none"  id="payment_head_details_total_amt_'+counter+'"></td>';
+                            newRow +='<td  style="display: none"  id="payment_head_details_to_dt_'+counter+'"></td>';
+                            newRow +='<td  style="display: none"  id="payment_head_details_frm_dt_'+counter+'"></td>';
+                            newRow += '<td>Batch</td><td><select id="batch_id_'+counter+'" name="new_batch_id[]" >';
+                            newRow += strr1;
+                            newRow += '</select><i class="icon-minus removee" onclick="html_rm_tr()"></i></td>';
+
+                            // newRow += '<td><input type="text" id="frm_dt_'+counter+'" name="frm_dt[]" class="from_date" style="width:72%"></td>';
+                            //newRow += '<td><input type="text" id="to_dt_'+counter+'" name="to_dt[]" class="to_date" style="width:72%"> </td>';
+                            // newRow += '<td><input type="text" id="describ_'+counter+'" name="describ[]" style="width:72%"><i class="icon-minus removee"></i></td>';
+                            // newRow += '<td><div class="removee">Remove</div></td>';
+                            jQuery('table.authors-list').append(newRow);
+                        });
+                        function html_rm_tr(id) {
+                            //alert('hi');
+                            $('table').on('click', '.removee', function(){
+                            $(this).closest('tr').remove();
+                            });
+                        }
+                       function rm_tr(id)
+                       {
+                           //alert('hi');
+                           //$('table').on('click', '.removee', function(){
+                               //$(this).closest('tr').remove();
+                           //});
+                           var base_url='<?php echo base_url();?>';
+                           if(confirm('Are you sure do you want to delete this Subject?')){
+                               $.ajax({
+                                   type:"POST",
+                                   url: "<?php echo base_url() ?>index.php/studentlist/delete_subject",
+                                   data:{deleteid:id},
+                                   success:function(msg){
+                                       alert(msg);
+                                       location.reload();
+
+                                   }
+                               });
+
+                               //$('#myOKModal').modal('show');
+
+                           }
+                       }
+
+
+
+                    </script>
+                    <style>
+                        .removee{cursor:pointer;}
+                    </style>
+
+                    <?php
+
+                    @$count = count($sub_data);
+                    if($count == 0)
+                    {
+                    ?>
+                    <table class="table table-striped table-bordered bootstrap-datatable datatable authors-list">
+                        <tr>
+
+                            <td>Subject Name</td>
+                            <td><select id="sub_id_0" class="sub_id" name="add_subject[]" onchange="subject_id_details(0,this.value);sub_fee(0,this.value);sub_payment_detils(0,this.value);sub_payment_amt(0,this.value);sub_payment_vat(0,this.value);sub_payment_vat_amt(0,this.value);sub_payment_total_amt(0,this.value);sub_payment_to_date(0,this.value);sub_payment_frm_date(0,this.value); /*add_show_subject_fees(this.value)*/">
+                                    <option value="0">---Select Subject---</option>
+                                    <?php
+                                    foreach(@$subject_name as $sn)
+                                    {
+
+                                        //echo "<pre>";
+                                        // print_r($sn);
+
+                                        @$sub = $sn->subject_id;
+                                        @$sun_name = $sn->subject_name;
+
+                                        ?>
+                                        <option value="<?php echo @$sub; ?>"><?php echo @$sun_name ;?></option>
+                                        <?php
+                                    }
+                                    ?>
+                                </select>
+
+                            </td>
+                            <td id="subject_id_details_0" style="display: none"></td>
+
+                            <td id="payment_head_details_0" style="display: none"></td>
+                            <td id="payment_head_details_amt_0" style="display: none"></td>
+                            <td id="payment_head_details_vat_0" style="display: none"></td>
+                            <td id="payment_head_details_vat_amt_0" style="display: none"></td>
+                            <td id="payment_head_details_total_amt_0" style="display: none"></td>
+                            <td id="payment_head_details_to_dt_0" style="display: none"></td>
+                            <td id="payment_head_details_frm_dt_0" style="display: none"></td>
+
+                            <td>Batch</td>
+                            <td>
+                                <select id="batch_id_0" name="batch_id[]">
+                                    <option value="0">---Select Batch---</option>
+                                    <?php
+                                        foreach ($s as $bname)
+                                        {
+                                            $bn = $bname->batch_name;
+                                    ?>
+                                            <option value="<?php echo $bn;?>" ><?php echo $bn;?></option>
+                                    <?php
+                                        }
+                                    ?>
+                                </select>
+                            </td>
+                        </tr>
+                    </table>
+                    <?php
+                    }
+                    else
+                    {
+                    ?>
+                    <table class="table table-striped table-bordered bootstrap-datatable datatable authors-list">
+                        <?php
+                        $c = 0;
+                        foreach($sub_data as $ph)
+                        {
+                           // print_r($ph);
+                           $student_id = $ph->student_id;
+                            //echo $ph->subject_name;
+                        ?>
+                            <input type="hidden" name="sub_id[]" value="<?php echo $ph->add_subject_id;?>">
+                            <tr>
+                                <td>Subject Name</td>
+                                <td>
+                                    <select id="sub_id_<?php echo $c;?>" class="sub_id" name="add_subject[]" onchange="old_subject_id_details(<?php echo $c;?>,this.value);old_sub_fee(<?php echo $c;?>,this.value);old_sub_payment_detils(<?php echo $c;?>,this.value);old_sub_payment_amt(<?php echo $c;?>,this.value);old_sub_payment_vat(<?php echo $c;?>,this.value);old_sub_payment_vat_amt(<?php echo $c;?>,this.value);old_sub_payment_total_amt(<?php echo $c;?>,this.value);old_sub_payment_to_date(<?php echo $c;?>,this.value);old_sub_payment_frm_date(<?php echo $c;?>,this.value); /*add_show_subject_fees(this.value)*/">
+                                   <option value="0">---Select Subject---</option>
+                                            <?php
+                                        foreach($subject_name as $sn)
+                                        {
+
+                                            //echo "<pre>";
+                                           // print_r($sn);
+                                           
+                                            $sub = $sn->subject_id;
+                                            $sun_name = $sn->subject_name;
+
+                                    ?>
+                                    <option value="<?php echo $sub; ?>" <?php if($ph->subject_name == $sub){ echo "selected";}?>><?php echo $sun_name ;?></option>
+                                    <?php
+                                        }
+                                    ?>
+                                    </select>
+                                </td>
+                                <?php
+                                $sub_id = $ph->subject_name;
+                                $pay_det = $this->common_model->edit_subject_payment_details_modelll('tbl_add_course_to_student_payment_details','subject_id',$sub_id,'student_id',$student_id);
+                               //print_r($pay_det);
+                                for($i=0;$i<count($pay_det);$i++){
+                                    $pay_detail_id = $pay_det[$i]->payment_id;
+                                    $pay_sub_id = $pay_det[$i]->subject_id;
+                                    $pay_sub_payment_head_name = $pay_det[$i]->payment_head_name;
+                                    $pay_sub_payment_head_amt = $pay_det[$i]->payment_head_amt;
+                                    $pay_sub_payment_head_vat = $pay_det[$i]->payment_head_vat;
+                                    $pay_sub_payment_head_vat_amt = $pay_det[$i]->payment_head_vat_amt;
+                                    $pay_sub_payment_head_tot_amt = $pay_det[$i]->payment_head_tot_amt;
+                                    $pay_sub_payment_head_to_date = $pay_det[$i]->payment_head_to_date;
+                                    $pay_sub_payment_head_frm_date = $pay_det[$i]->payment_head_frm_date;
+                                    if($pay_sub_payment_head_name == "Exam Fees"){}
+                                    else if($pay_sub_payment_head_name == "Reg Fees"){}else{
+
+
+                                ?>
+                                        <td style="display: none" ><input type="text" name= "old_payment_id_detail[]" value="<?php echo $pay_detail_id;?>"></td>
+                                        <td style="display: none"  id="old_subject_id_details_<?php echo $c;?>"><input type="text" class="old_empty_<?php echo $c;?>" name= "old_subject_id_detail[]" value="<?php echo $pay_sub_id;?>"></td>
+                                        <td style="display: none"  id="old_payment_head_details_<?php echo $c;?>"><input type="text" class="old_empty_<?php echo $c;?>" name= "old_payment_detail[]" value="<?php echo $pay_sub_payment_head_name;?>"></td>
+                                        <td style="display: none"   id="old_payment_head_details_amt_<?php echo $c;?>"><input type="text" class="old_empty_<?php echo $c;?>" name= "old_payment_detail_amt[]" value="<?php echo $pay_sub_payment_head_amt;?>"></td>
+                                        <td style="display: none"  id="old_payment_head_details_vat_<?php echo $c;?>"><input type="text" class="old_empty_<?php echo $c;?>" name= "old_payment_detail_vat[]" value="<?php echo $pay_sub_payment_head_vat;?>"></td>
+                                        <td style="display: none"  id="old_payment_head_details_vat_amt_<?php echo $c;?>"> <input type="text" class="old_empty_<?php echo $c;?>" name= "old_payment_detail_vat_amt[]" value="<?php echo $pay_sub_payment_head_vat_amt;?>"></td>
+                                        <td style="display: none"  id="old_payment_head_details_total_amt_<?php echo $c;?>"> <input type="text" class="old_empty_<?php echo $c;?>" name= "old_payment_detail_tot_amt[]" value="<?php echo $pay_sub_payment_head_tot_amt;?>"></td>
+                                        <td style="display: none"  id="old_payment_head_details_to_dt_<?php echo $c;?>"> <input type="text" class="old_empty_<?php echo $c;?>" name= "old_payment_detail_to_date[]" value="<?php echo $pay_sub_payment_head_to_date;?>"></td>
+                                        <td style="display: none"  id="old_payment_head_details_frm_dt_<?php echo $c;?>"> <input type="text" class="old_empty_<?php echo $c;?>" name= "old_payment_detail_frm_date[]" value="<?php echo $pay_sub_payment_head_frm_date;?>"></td>
+
+
+
+
+                            <?php }}
+                                if(@$pay_sub_id == "")
+                                {?>
+
+                                <td style="display: none" id="subject_id_details_<?php echo $c;?>" ><input type="text" name= "subject_id_detail[]" >'</td>
+                                <td style="display: none" id="payment_head_details_<?php echo $c;?>" ><input type="text" name= "payment_detail[]" ></td>
+                                <td style="display: none" id="payment_head_details_amt_<?php echo $c;?>"><input type="text" name= "payment_detail_amt[]" ></td>
+                                <td style="display: none" id="payment_head_details_vat_<?php echo $c;?>"><input type="text" name= "payment_detail_vat[]" ></td>
+                                <td style="display: none" id="payment_head_details_vat_amt_<?php echo $c;?>" > <input type="text" name= "payment_detail_vat_amt[]" ></td>
+                                <td style="display: none" id="payment_head_details_total_amt_<?php echo $c;?>" > <input type="text" name= "payment_detail_tot_amt[]" ></td>
+                                <td style="display: none" id="payment_head_details_to_dt_<?php echo $c;?>" > <input type="text" name= "payment_detail_to_date[]" ></td>
+                                <td style="display: none" id="payment_head_details_frm_dt_<?php echo $c;?>"> <input type="text" name= "payment_detail_frm_date[]" ></td>
+                                    <?php } ?>
+                            <td>Batch</td>
+                            <td><select id="batch_id_<?php echo $c;?>" name="batch_id[]">
+                                    <?php
+                                    foreach ($batch_detail as $bname)
+                                    {
+                                        //print_r($bname);
+
+                                        $bn = $bname->rep_batch_name;
+
+                                        ?>
+                                        <option value="<?php echo $bn;?>" <?php if($ph->batch_name == $bn){ echo "selected";}?>><?php echo $bn;?></option>
+                                        <?php
+                                    }
+                                    ?>
+                                </select><i class="icon-minus removee" onclick="rm_tr(<?php echo $ph->add_subject_id;?>)"></i>
+                            </td>
+                        </tr>
+                        <?php
+                            $c++;
+                        }
+                        }}
+                        ?>
+
+
+                    </table>
+                    <input type="submit" value="Save">
+                    <input type="button" value="Back" onclick="javascript: window.history.back();">
+
+                </form>
+
+            </div>
+        </div>
+        <!--/span-->
+
+    </div>
+    <!--/row-->
+
+    <!-- content ends -->
+</div>
+</body>
+
+
+<!-- -----------------------------------------success modal------------------------------------- -->
+
+<div class="modal hide fade" id="myOKModal" style="width:300px; left:40%"> <?php echo form_open_multipart(); ?>
+
+    <div class="modal-body">
+        <h4>The Post has been Deleted !</h4>
+        <div style=" float:center;">
+            <button type="submit" class="btn btn-primary">ok</button>
+        </div>
+    </div>
+
+    </form>
+</div>
+
+
+
+
+<!------------------------------------------------Add Subject---------------------------------------------------------->
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script>
+    function abc()
+    {
+        //alert('hi');
+    }
+    function add_show_course(id)
+    {
+        // alert(id);
+        $("#edit_db_course").load('<?php echo base_url();?>index.php/subject_module/add_course_model/'+id);
+        $('#subject_fee').val('0');
+        $('#reg_fee_show').val('0');
+    }
+
+    function add_show_class(id)
+    {
+        var acc_value = $('#add_ac_year').val();
+        $.ajax({
+            url: "<?php echo base_url();?>index.php/studentlist/add_class/"+id,
+            type: "POST",
+            dataType:'text',
+            data: {acc_value:acc_value},
+            success: function (data) {
+                //alert(data)
+                //var obj =JSON.parse(data);
+
+                //$('#reg_fee_show').val(obj.amount);
+
+                $("#class_id").load('<?php echo base_url();?>index.php/studentlist/add_class/'+id);
+            }
+        });
+
+    }
+
+    function add_show_subject(id)
+    {
+        var acc_value = $('#add_ac_year').val();
+        var course_value = $('#edit_db_course').val();
+        //var class_value = $('#class_id').val();
+        $.ajax({
+            url: "<?php echo base_url();?>index.php/studentlist/add_subject/"+id,
+            type: "POST",
+            dataType:'text',
+            data: {acc_value:acc_value,course_value:course_value},
+            success: function (data) {
+                //alert(data)
+
+
+                $("#sub_id_0").load('<?php echo base_url();?>index.php/studentlist/add_subject/'+id);
+                //$("#batch_id_0").load('<?php echo base_url();?>index.php/studentlist/add_batch/'+id);
+
+
+            }
+        });
+
+    }
+
+    function add_show_batch(id)
+    {
+        var acc_value = $('#add_ac_year').val();
+        var course_value = $('#edit_db_course').val();
+        //var class_value = $('#class_id').val();
+        $.ajax({
+            url: "<?php echo base_url();?>index.php/studentlist/add_batch/"+id,
+            type: "POST",
+            dataType:'text',
+            data: {acc_value:acc_value,course_value:course_value},
+            success: function (data) {
+                //alert(data)
+                //$("#sub_id_0").load('<?php echo base_url();?>index.php/studentlist/add_subject/'+id);
+                $("#batch_id_0").load('<?php echo base_url();?>index.php/studentlist/add_batch/'+id);
+
+
+            }
+        });
+
+    }
+
+</script>
+<script>
+
+
+    function chkboxsubject_id(id)
+    {
+        $(document).ready(function(){
+            $('input[type="checkbox"]').click(function()
+            {
+                var reg_fee=document.getElementById('reg_fee_show');
+                var reg_amt = reg_fee.value;
+                var val = parseInt(reg_amt);
+
+                $('input[type="checkbox"]:checked').each(function(){
+                    val+=parseInt($(this).val());
+                });
+
+                $("#subject_fee").val(val);
+            });
+        });
+    }
+
+    $("#edit_db_course").on("change", function(e)
+    {
+        var course_id = this.value;
+        $.ajax({
+            url: "<?php echo base_url();?>index.php/studentlist/add_reg_amount",
+            type: "POST",
+            dataType:'text',
+            data: {course_id:course_id},
+            success: function (data) {
+                //alert(data)
+                obj = JSON.parse(data);
+
+                $('#reg_fee_show').val(obj.amount);
+            }
+        });
+    });
+
+    $("#edit_db_course").on("change", function(e)
+    {
+        var course_id = this.value;
+        $.ajax({
+            url: "<?php echo base_url();?>index.php/studentlist/add_reg_amt_vat",
+            type: "POST",
+            dataType:'text',
+            data: {course_id:course_id},
+            success: function (data) {
+                //alert(data)
+                obj = JSON.parse(data);
+
+                $('#reg_fee_vat').val(obj.amount);
+            }
+        });
+    });
+
+    $("#edit_db_course").on("change", function(e)
+    {
+        var course_id = this.value;
+        $.ajax({
+            url: "<?php echo base_url();?>index.php/studentlist/add_reg_vat_amt",
+            type: "POST",
+            dataType:'text',
+            data: {course_id:course_id},
+            success: function (data) {
+                //alert(data)
+                obj = JSON.parse(data);
+
+                $('#reg_fee_vat_amt').val(obj.amount);
+            }
+        });
+    });
+
+    $("#edit_db_course").on("change", function(e)
+    {
+        var course_id = this.value;
+        $.ajax({
+            url: "<?php echo base_url();?>index.php/studentlist/add_reg_total_amt",
+            type: "POST",
+            dataType:'text',
+            data: {course_id:course_id},
+            success: function (data) {
+                //alert(data)
+                obj = JSON.parse(data);
+
+                $('#reg_fee_tot_amt').val(obj.amount);
+            }
+        });
+    });
+
+    $("#class_id").on("change", function(e)
+    {
+        var acc_value = $('#add_ac_year').val();
+        //alert(acc_value);
+        var class_id = this.value;
+        $.ajax({
+            url: "<?php echo base_url();?>index.php/studentlist/add_exam_fee",
+            type: "POST",
+            dataType:'text',
+            data: {acc_value:acc_value,class_id:class_id},
+            success: function (data) {
+                //alert(data)
+                obj = JSON.parse(data);
+
+                $('#exam_fee_show').val(obj.amount);
+            }
+        });
+    });
+
+    $("#class_id").on("change", function(e)
+    {
+        var acc_value = $('#add_ac_year').val();
+        //alert(acc_value);
+        var class_id = this.value;
+        $.ajax({
+            url: "<?php echo base_url();?>index.php/studentlist/add_exam_vat",
+            type: "POST",
+            dataType:'text',
+            data: {acc_value:acc_value,class_id:class_id},
+            success: function (data) {
+                // alert(data)
+                obj = JSON.parse(data);
+
+                $('#exam_fee_vat').val(obj.amount);
+            }
+        });
+    });
+
+    $("#class_id").on("change", function(e)
+    {
+        var acc_value = $('#add_ac_year').val();
+        //alert(acc_value);
+        var class_id = this.value;
+        $.ajax({
+            url: "<?php echo base_url();?>index.php/studentlist/add_exam_vat_amt",
+            type: "POST",
+            dataType:'text',
+            data: {acc_value:acc_value,class_id:class_id},
+            success: function (data) {
+                // alert(data)
+                obj = JSON.parse(data);
+
+                $('#exam_fee_vat_amt').val(obj.amount);
+            }
+        });
+    });
+
+    $("#class_id").on("change", function(e)
+    {
+        var acc_value = $('#add_ac_year').val();
+        //alert(acc_value);
+        var class_id = this.value;
+        $.ajax({
+            url: "<?php echo base_url();?>index.php/studentlist/add_exam_tot_amt",
+            type: "POST",
+            dataType:'text',
+            data: {acc_value:acc_value,class_id:class_id},
+            success: function (data) {
+                //alert(data)
+                obj = JSON.parse(data);
+
+                $('#exam_fee_tot_amt').val(obj.amount);
+            }
+        });
+    });
+
+    function sub_fee(id,value) {
+        //alert(value);
+        /*$("#sub_id_0").on("change", function (e) {*/
+        var acc_value = $('#add_ac_year').val();
+        var course_value = $('#edit_db_course').val();
+        var class_value = $('#class_id').val();
+
+        // var sub_id = this.value;
+        var sub_id = value;
+        //alert(sub_id);
+
+        $.ajax({
+            url: "<?php echo base_url();?>index.php/studentlist/subject_amount",
+            type: "POST",
+            dataType: 'text',
+            data: {acc_value: acc_value, course_value: course_value, sub_id: sub_id, class_value: class_value},
+            success: function (data) {
+                //alert(data)
+                obj = JSON.parse(data);
+
+                $('#subject_fees_'+id).val(obj.total_amount);
+            }
+        });
+        /*});*/
+    }
+
+
+
+    function subject_id_details(id,value)
+    {
+        //alert(value);
+        var sub_id = value;
+        //alert(sub_id);
+
+
+        $.ajax({
+            url: "<?php echo base_url();?>index.php/studentlist/add_subject_id",
+            type: "POST",
+            dataType: 'json',
+            data: {sub_id: sub_id},
+            success: function (data)
+            {
+                var arr_sub_id = Object.keys(data).length;
+                var html_str_sub_id ='';
+                for (i = 0; i < arr_sub_id; i++)
+                {
+                    var xyz = data[i].subject_id;
+                    html_str_sub_id+= '<input type="text" name= "subject_id_detail[]" value="'+xyz+'">';
+                }
+                $('#subject_id_details_'+id).html(html_str_sub_id);
+
+            }
+        });
+    }
+
+    function sub_payment_detils(id,value)
+    {
+        //alert(value);
+        var sub_id = value;
+        //alert(sub_id);
+
+
+        $.ajax({
+            url: "<?php echo base_url();?>index.php/studentlist/subject_payment_details",
+            type: "POST",
+            dataType: 'json',
+            data: {sub_id: sub_id},
+            success: function (data)
+            {
+                var arr = Object.keys(data).length;
+                var html_str ='';
+                for (i = 0; i < arr; i++)
+                {
+                    var xyz = data[i].payment_head;
+                    html_str+= '<input type="text" name= "payment_detail[]" value="'+xyz+'">';
+                }
+                $('#payment_head_details_'+id).html(html_str);
+            }
+        });
+    }
+
+    function sub_payment_amt(id,value)
+    {
+        var sub_id = value;
+
+        $.ajax({
+            url: "<?php echo base_url();?>index.php/studentlist/subject_payment_details_amt",
+            type: "POST",
+            dataType: 'json',
+            data: {sub_id: sub_id},
+            success: function (data)
+            {
+                var arrr = Object.keys(data).length;
+                var html_strr ='';
+                for (i = 0; i < arrr; i++)
+                {
+                    var xyzz = data[i].payment_head_amt;
+                    html_strr+= '<input type="text" name= "payment_detail_amt[]" value="'+xyzz+'">';
+                }
+                $('#payment_head_details_amt_'+id).html(html_strr);
+            }
+        });
+    }
+
+
+    function sub_payment_vat(id,value)
+    {
+        //alert(id)
+        var sub_id = value;
+
+        $.ajax({
+            url: "<?php echo base_url();?>index.php/studentlist/subject_payment_details_vat",
+            type: "POST",
+            dataType: 'json',
+            data: {sub_id: sub_id},
+            success: function (data)
+            {
+                var arr_vat = Object.keys(data).length;
+                var html_str_vat ='';
+                for (i = 0; i < arr_vat; i++)
+                {
+                    var xyzz = data[i].payment_head_vat;
+                    html_str_vat+= '<input type="text" name= "payment_detail_vat[]" value="'+xyzz+'">';
+                }
+                $('#payment_head_details_vat_'+id).html(html_str_vat);
+            }
+        });
+    }
+
+    function sub_payment_vat_amt(id,value)
+    {
+        //alert(id)
+        var sub_id = value;
+
+        $.ajax({
+            url: "<?php echo base_url();?>index.php/studentlist/subject_payment_details_vat_amt",
+            type: "POST",
+            dataType: 'json',
+            data: {sub_id: sub_id},
+            success: function (data)
+            {
+                var arr_vat_amt = Object.keys(data).length;
+                var html_str_vat_amt ='';
+                for (i = 0; i < arr_vat_amt; i++)
+                {
+                    var xyzz = data[i].payment_head_vat_amt;
+                    html_str_vat_amt+= '<input type="text" name= "payment_detail_vat_amt[]" value="'+xyzz+'">';
+                }
+                $('#payment_head_details_vat_amt_'+id).html(html_str_vat_amt);
+            }
+        });
+    }
+
+
+    function sub_payment_total_amt(id,value)
+    {
+        //alert(id)
+        var sub_id = value;
+
+        $.ajax({
+            url: "<?php echo base_url();?>index.php/studentlist/subject_payment_details_total_amt",
+            type: "POST",
+            dataType: 'json',
+            data: {sub_id: sub_id},
+            success: function (data)
+            {
+                var arr_tot_amt = Object.keys(data).length;
+                var html_str_tot_amt ='';
+                for (i = 0; i < arr_tot_amt; i++)
+                {
+                    var xyzz = data[i].	payment_head_total_amt;
+                    html_str_tot_amt+= '<input type="text" name= "payment_detail_tot_amt[]" value="'+xyzz+'">';
+                }
+                $('#payment_head_details_total_amt_'+id).html(html_str_tot_amt);
+            }
+        });
+    }
+
+
+    function sub_payment_to_date(id,value)
+    {
+        var sub_id = value;
+
+        $.ajax({
+            url: "<?php echo base_url();?>index.php/studentlist/subject_payment_details_to_date",
+            type: "POST",
+            dataType: 'json',
+            data: {sub_id: sub_id},
+            success: function (data)
+            {
+                var arrrr = Object.keys(data).length;
+                var html_strrr ='';
+                for (i = 0; i < arrrr; i++)
+                {
+                    var xyzzz = data[i].payment_head_to_dt;
+                    html_strrr+= '<input type="text" name= "payment_detail_to_date[]" value="'+xyzzz+'">';
+                }
+                $('#payment_head_details_to_dt_'+id).html(html_strrr);
+            }
+        });
+    }
+
+    function sub_payment_frm_date(id,value)
+    {
+        var sub_id = value;
+
+        $.ajax({
+            url: "<?php echo base_url();?>index.php/studentlist/subject_payment_details_frm_date",
+            type: "POST",
+            dataType: 'json',
+            data: {sub_id: sub_id},
+            success: function (data)
+            {
+                var arr_frm = Object.keys(data).length;
+                var html_str_frm ='';
+                for (i = 0; i < arr_frm; i++)
+                {
+                    var xyzzz = data[i].payment_head_frm_dt;
+                    html_str_frm+= '<input type="text" name= "payment_detail_frm_date[]" value="'+xyzzz+'">';
+                }
+                $('#payment_head_details_frm_dt_'+id).html(html_str_frm);
+            }
+        });
+    }
+
+
+
+
+
+    function  chkbox_id(id)
+    {
+        //var class_id = id;
+        var acc_year = $('#add_ac_year').val();
+        //alert(acc_year)
+        //$("#subject_id").load('<?php echo base_url();?>index.php/studentlist/add_subject/?acc_year='+acc_year+id);
+        $('#subject_id').html('');
+        jQuery.ajax({
+            url: "<?php echo base_url();?>index.php/studentlist/add_subject/",
+            data:{id:id,acc_year:acc_year},
+            type: "POST",
+            success:function(data){
+                //alert(data)
+                $('#subject_id').html(data);
+            }
+        });
+
+    }
+
+
+
+
+
+</script>
+<script src="<?php echo base_url();?>assets/multiple-select.js"></script>
+<script>
+    $(function() {
+        $('#selectclassbyacademic').change(function() {
+            console.log($(this).val());
+        }).multipleSelect({
+            width: '64%'
+        });
+    });
+</script>
+
+<script>
+    //fot old data
+    function old_sub_fee(id,value) {
+        //alert(value);
+        /*$("#sub_id_0").on("change", function (e) {*/
+        var acc_value = $('#add_ac_year').val();
+        var course_value = $('#edit_db_course').val();
+        var class_value = $('#class_id').val();
+
+        // var sub_id = this.value;
+        var sub_id = value;
+        //alert(sub_id);
+        $('.old_empty_'+id).remove();
+        $.ajax({
+            url: "<?php echo base_url();?>index.php/studentlist/subject_amount",
+            type: "POST",
+            dataType: 'text',
+            data: {acc_value: acc_value, course_value: course_value, sub_id: sub_id, class_value: class_value},
+            success: function (data) {
+                //alert(data)
+                obj = JSON.parse(data);
+
+                $('#old_subject_fees_'+id).val(obj.total_amount);
+            }
+        });
+        /*});*/
+    }
+
+
+
+    function old_subject_id_details(id,value)
+    {
+        //alert(value);
+        var sub_id = value;
+        //alert(sub_id);
+
+        $('.old_empty_'+id).remove();
+        $.ajax({
+            url: "<?php echo base_url();?>index.php/studentlist/add_subject_id",
+            type: "POST",
+            dataType: 'json',
+            data: {sub_id: sub_id},
+            success: function (data)
+            {
+                var arr_sub_id = Object.keys(data).length;
+                var html_str_sub_id ='';
+                for (i = 0; i < arr_sub_id; i++)
+                {
+                    var xyz = data[i].subject_id;
+                    html_str_sub_id+= '<input type="text" name= "old_subject_id_detail[]" value="'+xyz+'">';
+                }
+                $('#old_subject_id_details_'+id).html(html_str_sub_id);
+
+            }
+        });
+    }
+
+    function old_sub_payment_detils(id,value)
+    {
+        //alert(value);
+        var sub_id = value;
+        //alert(sub_id);
+        $('.old_empty_'+id).remove();
+
+        $.ajax({
+            url: "<?php echo base_url();?>index.php/studentlist/subject_payment_details",
+            type: "POST",
+            dataType: 'json',
+            data: {sub_id: sub_id},
+            success: function (data)
+            {
+                var arr = Object.keys(data).length;
+                var html_str ='';
+                for (i = 0; i < arr; i++)
+                {
+                    var xyz = data[i].payment_head;
+                    html_str+= '<input type="text" name= "old_payment_detail[]" value="'+xyz+'">';
+                }
+                $('#old_payment_head_details_'+id).html(html_str);
+            }
+        });
+    }
+
+    function old_sub_payment_amt(id,value)
+    {
+        var sub_id = value;
+        $('.old_empty_'+id).remove();
+        $.ajax({
+            url: "<?php echo base_url();?>index.php/studentlist/subject_payment_details_amt",
+            type: "POST",
+            dataType: 'json',
+            data: {sub_id: sub_id},
+            success: function (data)
+            {
+                var arrr = Object.keys(data).length;
+                var html_strr ='';
+                for (i = 0; i < arrr; i++)
+                {
+                    var xyzz = data[i].payment_head_amt;
+                    html_strr+= '<input type="text" name= "old_payment_detail_amt[]" value="'+xyzz+'">';
+                }
+                $('#old_payment_head_details_amt_'+id).html(html_strr);
+            }
+        });
+    }
+
+
+    function old_sub_payment_vat(id,value)
+    {
+        //alert(id)
+        var sub_id = value;
+        $('.old_empty_'+id).remove();
+        $.ajax({
+            url: "<?php echo base_url();?>index.php/studentlist/subject_payment_details_vat",
+            type: "POST",
+            dataType: 'json',
+            data: {sub_id: sub_id},
+            success: function (data)
+            {
+                var arr_vat = Object.keys(data).length;
+                var html_str_vat ='';
+                for (i = 0; i < arr_vat; i++)
+                {
+                    var xyzz = data[i].payment_head_vat;
+                    html_str_vat+= '<input type="text" name= "old_payment_detail_vat[]" value="'+xyzz+'">';
+                }
+                $('#old_payment_head_details_vat_'+id).html(html_str_vat);
+            }
+        });
+    }
+
+    function old_sub_payment_vat_amt(id,value)
+    {
+        //alert(id)
+        var sub_id = value;
+        $('.old_empty_'+id).remove();
+        $.ajax({
+            url: "<?php echo base_url();?>index.php/studentlist/subject_payment_details_vat_amt",
+            type: "POST",
+            dataType: 'json',
+            data: {sub_id: sub_id},
+            success: function (data)
+            {
+                var arr_vat_amt = Object.keys(data).length;
+                var html_str_vat_amt ='';
+                for (i = 0; i < arr_vat_amt; i++)
+                {
+                    var xyzz = data[i].payment_head_vat_amt;
+                    html_str_vat_amt+= '<input type="text" name= "old_payment_detail_vat_amt[]" value="'+xyzz+'">';
+                }
+                $('#old_payment_head_details_vat_amt_'+id).html(html_str_vat_amt);
+            }
+        });
+    }
+
+
+    function old_sub_payment_total_amt(id,value)
+    {
+        //alert(id)
+        var sub_id = value;
+        $('.old_empty_'+id).remove();
+        $.ajax({
+            url: "<?php echo base_url();?>index.php/studentlist/subject_payment_details_total_amt",
+            type: "POST",
+            dataType: 'json',
+            data: {sub_id: sub_id},
+            success: function (data)
+            {
+                var arr_tot_amt = Object.keys(data).length;
+                var html_str_tot_amt ='';
+                for (i = 0; i < arr_tot_amt; i++)
+                {
+                    var xyzz = data[i].	payment_head_total_amt;
+                    html_str_tot_amt+= '<input type="text" name= "old_payment_detail_tot_amt[]" value="'+xyzz+'">';
+                }
+                $('#old_payment_head_details_total_amt_'+id).html(html_str_tot_amt);
+            }
+        });
+    }
+
+
+    function old_sub_payment_to_date(id,value)
+    {
+        var sub_id = value;
+        $('.old_empty_'+id).remove();
+        $.ajax({
+            url: "<?php echo base_url();?>index.php/studentlist/subject_payment_details_to_date",
+            type: "POST",
+            dataType: 'json',
+            data: {sub_id: sub_id},
+            success: function (data)
+            {
+                var arrrr = Object.keys(data).length;
+                var html_strrr ='';
+                for (i = 0; i < arrrr; i++)
+                {
+                    var xyzzz = data[i].payment_head_to_dt;
+                    html_strrr+= '<input type="text" name= "old_payment_detail_to_date[]" value="'+xyzzz+'">';
+                }
+                $('#old_payment_head_details_to_dt_'+id).html(html_strrr);
+            }
+        });
+    }
+    function old_sub_payment_frm_date(id,value)
+    {
+        var sub_id = value;
+        $('.old_empty_'+id).remove();
+
+        $.ajax({
+            url: "<?php echo base_url();?>index.php/studentlist/subject_payment_details_frm_date",
+            type: "POST",
+            dataType: 'json',
+            data: {sub_id: sub_id},
+            success: function (data)
+            {
+                var arr_frm = Object.keys(data).length;
+                var html_str_frm ='';
+                for (i = 0; i < arr_frm; i++)
+                {
+                    var xyzzz = data[i].payment_head_frm_dt;
+                    html_str_frm+= '<input type="text" name= "old_payment_detail_frm_date[]" value="'+xyzzz+'">';
+                }
+                $('#old_payment_head_details_frm_dt_'+id).html(html_str_frm);
+            }
+        });
+    }
+
+</script>

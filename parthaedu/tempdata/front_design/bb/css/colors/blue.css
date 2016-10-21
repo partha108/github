@@ -1,0 +1,27 @@
+a, .g-btn.type_inverse, .g-btn.type_inverse:hover, .g-btn.type_inverse.disabled, .g-btn.type_inverse.disabled:hover, .g-btn.type_inverse.disabled:active, .w-features-item-icon, .w-listing.layout_tile.cols_fluid .w-listing-item-title, .w-tabs-item.active, .w-tabs.layout_accordion .w-tabs-section.active .w-tabs-section-title, .w-filters-item-link:hover, .w-filters-item.active .w-filters-item-link, .w-blog-entry-link:hover .w-blog-entry-title-h, .w-team-member-name, .g-html p strong, .w-timeline-item.active .w-timeline-item-title {
+	color:#0088cc
+}
+.g-btn.type_color, .g-btn.type_color.disabled, .g-btn.type_color.disabled:hover, .g-btn.type_color.disabled:active, .l-submain.type_colored, .l-subheader.at_top .w-nav-item.level_1.active .w-nav-anchor.level_1, .l-subheader.at_top .w-nav-item.level_1.clicked .w-nav-anchor.level_1, .l-subheader.at_top .w-nav-item.level_2.clicked .w-nav-anchor.level_2, .l-subheader.at_top .w-nav-item.level_3.clicked .w-nav-anchor.level_3, .l-subheader.at_top .w-nav-item.level_2:hover .w-nav-anchor.level_2, .l-subheader.at_top .w-nav-item.level_3:hover .w-nav-anchor.level_3, .l-subheader.at_top .w-nav-item.level_2.active:hover .w-nav-anchor.level_2, .l-subheader.at_top .w-nav-item.level_3.active:hover .w-nav-anchor.level_3, .w-nav-list.layout_ver .active .w-nav-anchor.level_1, .w-nav-list.layout_ver .active .w-nav-anchor.level_1:after, .w-links-anchor:hover, .w-actionbox.controls_aside.type_colored, .w-features-item-icon.type_circle, .w-features-item-bullet, .g-pagination-item.active, .w-blog-entry-link:active .w-blog-entry-title-h, .w-tags.layout_block .w-tags-item-link:hover, .flex-direction-nav a:hover, .tp-leftarrow.default:hover, .tp-rightarrow.default:hover, .tp-caption.very_big_color, .tp-caption.button_color a, .tp-caption.medium_color, .w-listing-item-image-bg i, .w-team-member-links, .w-iconbox-h:hover, .w-iconbox-icon:before, .w-portfolio-item-h, .w-timeline-item.active .w-timeline-item-bullet, .w-services-item-icon:before, .w-pricing-item.type_featured .w-pricing-item-title {
+	background-color:#008fcc
+}
+.g-btn.type_color, .g-btn.type_color.disabled, .g-btn.type_color.disabled:hover, .g-btn.type_color.disabled:active, .l-subheader.at_top .l-subheader-h, .l-canvas.type_wide .l-subheader.at_top, .l-submain.type_colored, .l-subheader.at_top .w-nav-item.level_1.active .w-nav-anchor.level_1, .l-subheader.at_top .w-nav-item.level_1.clicked .w-nav-anchor.level_1, .l-subheader.at_top .w-nav-item.level_2.clicked .w-nav-anchor.level_2, .l-subheader.at_top .w-nav-item.level_3.clicked .w-nav-anchor.level_3, .l-subheader.at_top .w-nav-item.level_2:hover .w-nav-anchor.level_2, .l-subheader.at_top .w-nav-item.level_3:hover .w-nav-anchor.level_3, .l-subheader.at_top .w-nav-item.level_2.active:hover .w-nav-anchor.level_2, .l-subheader.at_top .w-nav-item.level_3.active:hover .w-nav-anchor.level_3, .w-nav-list.layout_ver .active .w-nav-anchor.level_1, .w-links-anchor:hover, .w-tabs-item.active, .w-clients-item:hover, .w-filters-item.active .w-filters-item-link, .w-blogpost, .w-iconbox-h:hover, .l-submain.type_background .w-iconbox-h:hover {
+	border-color:#008fcc
+}
+.w-team-member-links:after {
+	border-right-color:#008fcc
+}
+.l-submain:first-child {
+	border-top-color:#008fcc
+}
+.g-btn.type_color, .g-btn.type_color.disabled, .g-btn.type_color.disabled:hover, .g-btn.type_color.disabled:active {
+	box-shadow:0 2px 0 #0074a6
+}
+::-moz-selection {
+background-color:#0074a6
+}
+::selection {
+background-color:#0074a6
+}
+.w-blog-entry-link:active .w-blog-entry-title-h {
+	color:#fff
+}
